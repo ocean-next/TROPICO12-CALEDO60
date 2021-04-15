@@ -36,10 +36,10 @@
 !-----------------------------------------------------------------------
 &namrun        !   parameters of the run
 !-----------------------------------------------------------------------
-   cn_exp      =  'TRPC12N00-CALEDO60'  !  experience name
-   nn_it000    =    241201   !  first time step
-   nn_itend    =    263520   !  last  time step (std 5840)
-   nn_date0    =    20121201   !  date at nit_0000 (format yyyymmdd) used if ln_rstart=F or (ln_rstart=T and nn_rstctl=0 or 1)
+   cn_exp      =  'TRPC12NT0-CALEDO60'  !  experience name
+   nn_it000    =    526321   !  first time step
+   nn_itend    =    548640   !  last  time step (std 5840)
+   nn_date0    =    20140101   !  date at nit_0000 (format yyyymmdd) used if ln_rstart=F or (ln_rstart=T and nn_rstctl=0 or 1)
    nn_leapy    =       1   !  Leap year calendar (1) or not (0)
    ln_rstart   =  .true.   !  start from rest (F) or from a restart file (T)
       ln_1st_euler = .false.  !  =T force a start with forward time step (ln_rstart=T)
@@ -47,13 +47,13 @@
       !                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
       !                          !    = 1 nn_date0 read in namelist ; nn_it000 : check consistancy between namelist and restart
       !                          !    = 2 nn_date0 read in restart  ; nn_it000 : check consistancy between namelist and restart
-      cn_ocerst_in    = 'TRPC12N00-CALEDO60_00241200_restart_oce'   !  suffix of ocean restart name (input)
-      cn_ocerst_indir = './restarts/00048240'         !  directory from which to read input ocean restarts
+      cn_ocerst_in    = 'TRPC12NT0-CALEDO60_00526320_restart_oce'   !  suffix of ocean restart name (input)
+      cn_ocerst_indir = './restarts/00105264'         !  directory from which to read input ocean restarts
       cn_ocerst_out   = 'restart_oce'   !  suffix of ocean restart name (output)
-      cn_ocerst_outdir = './restarts/00052704'         !  directory in which to write output ocean restarts
+      cn_ocerst_outdir = './restarts/00109728'         !  directory in which to write output ocean restarts
    nn_istate   =       0   !  output the initial state (1) or not (0)
    ln_rst_list = .false.   !  output restarts at list of times using nn_stocklist (T) or at set frequency with nn_stock (F)
-   nn_stock    = 10800  ! 1year @ 5400 s  frequency of creation of a restart file (modulo referenced to 1)
+   nn_stock    = 22320  ! 1year @ 5400 s  frequency of creation of a restart file (modulo referenced to 1)
    nn_write    = 22320   ! 1year @ 5400 s   frequency of write in the output file   (modulo referenced to nn_it000)
    ln_mskland  = .false.   !  mask land points in NetCDF outputs
    ln_clobber  = .true.    !  clobber (overwrite) an existing file
@@ -175,15 +175,15 @@
    !___________!_________________________!___________________!___________!_____________!________!___________!______________________________________!__________!_______________!
    !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ !       weights filename               ! rotation ! land/sea mask !
    !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                                      ! pairing  !    filename   !
-   sn_wndi =  'u10_ERA5_tropico-box_surface_1h', 1., 'u10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_1071x361-CALEDO60.nc'  , 'Uwnd'   , ''
-   sn_wndj =  'v10_ERA5_tropico-box_surface_1h', 1., 'v10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_1071x361-CALEDO60.nc'  , 'Vwnd'   , ''
-   sn_qsr  = 'ssrd_ERA5_tropico-box_surface_1h', 1.,'ssrd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_qlw  = 'strd_ERA5_tropico-box_surface_1h', 1.,'strd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_tair =  't2m_ERA5_tropico-box_surface_1h', 1., 't2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_humi =  'd2m_ERA5_tropico-box_surface_1h', 1., 'd2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_prec =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_snow =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_slp  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
+   sn_wndi =  'u10_ERA5_tropico-box_surface_1h', 1., 'u10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_605x341-CALEDO60.nc'  , 'Uwnd'   , ''
+   sn_wndj =  'v10_ERA5_tropico-box_surface_1h', 1., 'v10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_605x341-CALEDO60.nc'  , 'Vwnd'   , ''
+   sn_qsr  = 'ssrd_ERA5_tropico-box_surface_1h', 1.,'ssrd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_qlw  = 'strd_ERA5_tropico-box_surface_1h', 1.,'strd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_tair =  't2m_ERA5_tropico-box_surface_1h', 1., 't2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_humi =  'd2m_ERA5_tropico-box_surface_1h', 1., 'd2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_prec =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_snow =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
+   sn_slp  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namsbc_abl    !   Atmospheric Boundary Layer formulation           (ln_abl = T)
@@ -231,7 +231,7 @@
    !___________!_________________________!___________________!___________!_____________!________!___________!__________________!______$
    !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotat$
    !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairi$
-   sn_apr  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
+   sn_apr  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-CALEDO60.nc' , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namisf       !  Top boundary layer (ISF)                               (default: OFF)
@@ -277,6 +277,24 @@
 !-----------------------------------------------------------------------
 &nam_tide      !   tide parameters                                      (default: OFF)
 !-----------------------------------------------------------------------
+   ln_tide     = .true.       ! Activate tides
+      nn_tide_var   = 1          !  Variant of tidal parameter set and tide-potential computation
+      !                          !     (1: default; 0: compatibility with previous versions)
+      ln_tide_dia   = .true.     !  Enable tidal diagnostic output
+      ln_tide_pot   = .true.                !  use tidal potential forcing
+         rn_tide_gamma = 0.7                   ! Tidal tilt factor
+         ln_scal_load  = .true.                ! Use scalar approximation for
+            rn_scal_load = 0.094               !     load potential
+         ln_read_load  = .false.               ! Or read load potential from file
+            cn_tide_load = 'tide_LOAD_grid_T.nc'  ! filename for load potential
+            !
+      ln_tide_ramp  = .false.               !  Use linear ramp for tides at startup
+         rn_tide_ramp_dt = 0.               !  ramp duration in days
+      sn_tide_cnames(1) = 'M2'              !  name of constituent - all tidal components must be set in namelist_cfg
+      sn_tide_cnames(2) = 'S2'
+      sn_tide_cnames(3) = 'N2'
+      sn_tide_cnames(4) = 'K1'
+      sn_tide_cnames(5) = 'O1'
 /
 !-----------------------------------------------------------------------
 &nambdy        !  unstructured open boundaries                          (default: OFF)
@@ -475,8 +493,9 @@
       nn_evdm  =    0            !  evd apply on tracer (=0) or on tracer and momentum (=1)
       rn_evd   =  100.           !  evd mixing coefficient [m2/s]
    !                       !  Coefficients
-   rn_avm0     =   1.e-4      !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
-   rn_avt0     =   1.e-5      !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
+!!JMM eORCA12.L75-GJM2020: because param de Casimir !!!
+   rn_avm0     =   1.e-5      !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
+   rn_avt0     =   1.e-6      !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
    nn_avb      =    0         !  profile for background avt & avm (=1) or not (=0)
    nn_havtb    =    1         !  horizontal shape for avtb (=1) or not (=0)
 /
@@ -625,6 +644,7 @@
 !-----------------------------------------------------------------------
 &namctl        !   Control prints                                       (default: OFF)
 !-----------------------------------------------------------------------
+sn_cfctl%l_oceout  = .false.
 /
 !-----------------------------------------------------------------------
 &namsto        ! Stochastic parametrization of EOS                      (default: OFF)

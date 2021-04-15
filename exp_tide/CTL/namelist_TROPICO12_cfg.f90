@@ -1,7 +1,7 @@
 !!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 !! NEMO/OCE  Configuration namelist : overwrite default values defined in SHARED/namelist_ref
 !!
-!!    TROPICO12's child => CALEDO60
+!!    TROPICO12 (AGRIF MOTHER domain)
 !!
 !!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 !! NEMO/OCE  :  1 - Domain & run manager (namrun, namcfg, namdom, namtsd, namcrs, namc1d, namc1d_uvd)
@@ -36,10 +36,10 @@
 !-----------------------------------------------------------------------
 &namrun        !   parameters of the run
 !-----------------------------------------------------------------------
-   cn_exp      =  'TRPC12N00-CALEDO60'  !  experience name
-   nn_it000    =    241201   !  first time step
-   nn_itend    =    263520   !  last  time step (std 5840)
-   nn_date0    =    20121201   !  date at nit_0000 (format yyyymmdd) used if ln_rstart=F or (ln_rstart=T and nn_rstctl=0 or 1)
+   cn_exp      =  'TROPICO12_NST-TRPC12NT0'  !  experience name
+   nn_it000    =    105265   !  first time step
+   nn_itend    =    109728   !  last  time step (std 5840)
+   nn_date0    =    20140101   !  date at nit_0000 (format yyyymmdd) used if ln_rstart=F or (ln_rstart=T and nn_rstctl=0 or 1)
    nn_leapy    =       1   !  Leap year calendar (1) or not (0)
    ln_rstart   =  .true.   !  start from rest (F) or from a restart file (T)
       ln_1st_euler = .false.  !  =T force a start with forward time step (ln_rstart=T)
@@ -47,28 +47,28 @@
       !                          !    = 0 nn_date0 read in namelist ; nn_it000 : read in namelist
       !                          !    = 1 nn_date0 read in namelist ; nn_it000 : check consistancy between namelist and restart
       !                          !    = 2 nn_date0 read in restart  ; nn_it000 : check consistancy between namelist and restart
-      cn_ocerst_in    = 'TRPC12N00-CALEDO60_00241200_restart_oce'   !  suffix of ocean restart name (input)
-      cn_ocerst_indir = './restarts/00048240'         !  directory from which to read input ocean restarts
+      cn_ocerst_in    = 'TROPICO12_NST-TRPC12NT0_00105264_restart_oce'   !  suffix of ocean restart name (input)
+      cn_ocerst_indir = '/scratch/cnt0024/ige2071/brodeau/NEMO/TROPICO12/TROPICO12_NST-TRPC12NT0-R/00105264'         !  directory from which to read input ocean restarts
       cn_ocerst_out   = 'restart_oce'   !  suffix of ocean restart name (output)
-      cn_ocerst_outdir = './restarts/00052704'         !  directory in which to write output ocean restarts
+      cn_ocerst_outdir = '/scratch/cnt0024/ige2071/brodeau/NEMO/TROPICO12/TROPICO12_NST-TRPC12NT0-R/00109728'         !  directory in which to write output ocean restarts
    nn_istate   =       0   !  output the initial state (1) or not (0)
    ln_rst_list = .false.   !  output restarts at list of times using nn_stocklist (T) or at set frequency with nn_stock (F)
-   nn_stock    = 10800  ! 1year @ 5400 s  frequency of creation of a restart file (modulo referenced to 1)
-   nn_write    = 22320   ! 1year @ 5400 s   frequency of write in the output file   (modulo referenced to nn_it000)
+   nn_stock    = 4464  ! 1year @ 5400 s  frequency of creation of a restart file (modulo referenced to 1)
+   nn_write    = 4464   ! 1year @ 5400 s   frequency of write in the output file   (modulo referenced to nn_it000)
    ln_mskland  = .false.   !  mask land points in NetCDF outputs
    ln_clobber  = .true.    !  clobber (overwrite) an existing file
 /
 !-----------------------------------------------------------------------
 &namdom        !   time and space domain
 !-----------------------------------------------------------------------
-   rn_Dt       = 120.     !  time step for the dynamics and tracer
+   rn_Dt       = 600.     !  time step for the dynamics and tracer
    ln_meshmask = .false.   !  =T create a mesh file
 /
 !-----------------------------------------------------------------------
 &namcfg        !   parameters of the configuration                      (default: use namusr_def in namelist_cfg)
 !-----------------------------------------------------------------------
    ln_read_cfg = .true.    !  (=T) read the domain configuration file
-      cn_domcfg = "domain_cfg_L125_tr21"  ! domain configuration filename
+      cn_domcfg = 'domain_cfg'  ! domain configuration filename
 /
 !-----------------------------------------------------------------------
 &namtsd        !    Temperature & Salinity Data  (init/dmp)             (default: OFF)
@@ -126,7 +126,7 @@
 !-----------------------------------------------------------------------
 &namsbc        !   Surface Boundary Condition manager                   (default: NO selection)
 !-----------------------------------------------------------------------
-   nn_fsbc     = 30   !  frequency of SBC module call
+   nn_fsbc     = 6   !  frequency of SBC module call
 !!!   nn_fsbc     =  1        !#lolo: if not skin param  Frequency? of SBC module call
                            !     (also = the frequency of sea-ice & iceberg model call)
                      ! Type of air-sea fluxes
@@ -140,7 +140,7 @@
    nn_fwb      = 0         !  FreshWater Budget: =0 unchecked
       !                    !     =1 global mean of e-p-r set to zero at each time step
       !                    !     =2 annual global mean of e-p-r set to zero
-   ln_rnf      = .false.   !#lolo  runoffs                                   (T => fill namsbc_rnf)
+   ln_rnf      = .true.    !  runoffs                                   (T => fill namsbc_rnf)
    ln_apr_dyn  = .true.    !  Patm gradient added in ocean & ice Eqs.   (T => fill namsbc_apr )
    ln_wave     = .false.   !  Activate coupling with wave  (T => fill namsbc_wave)
    nn_lsm      = 0         !  =0 land/sea mask for input fields is not applied (keep empty land/sea mask filename field) ,
@@ -175,15 +175,15 @@
    !___________!_________________________!___________________!___________!_____________!________!___________!______________________________________!__________!_______________!
    !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ !       weights filename               ! rotation ! land/sea mask !
    !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                                      ! pairing  !    filename   !
-   sn_wndi =  'u10_ERA5_tropico-box_surface_1h', 1., 'u10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_1071x361-CALEDO60.nc'  , 'Uwnd'   , ''
-   sn_wndj =  'v10_ERA5_tropico-box_surface_1h', 1., 'v10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_1071x361-CALEDO60.nc'  , 'Vwnd'   , ''
-   sn_qsr  = 'ssrd_ERA5_tropico-box_surface_1h', 1.,'ssrd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_qlw  = 'strd_ERA5_tropico-box_surface_1h', 1.,'strd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_tair =  't2m_ERA5_tropico-box_surface_1h', 1., 't2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_humi =  'd2m_ERA5_tropico-box_surface_1h', 1., 'd2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_prec =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_snow =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
-   sn_slp  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
+   sn_wndi =  'u10_ERA5_tropico-box_surface_1h', 1., 'u10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_605x341-TROPICO12.nc'  , 'Uwnd'   , ''
+   sn_wndj =  'v10_ERA5_tropico-box_surface_1h', 1., 'v10',     .true.   , .false. , 'yearly'  , 'weight_bicubic_ERA5_tropico-box_605x341-TROPICO12.nc'  , 'Vwnd'   , ''
+   sn_qsr  = 'ssrd_ERA5_tropico-box_surface_1h', 1.,'ssrd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_qlw  = 'strd_ERA5_tropico-box_surface_1h', 1.,'strd',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_tair =  't2m_ERA5_tropico-box_surface_1h', 1., 't2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_humi =  'd2m_ERA5_tropico-box_surface_1h', 1., 'd2m',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_prec =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_snow =   'tp_ERA5_tropico-box_surface_1h', 1.,  'tp',     .false.  , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
+   sn_slp  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namsbc_abl    !   Atmospheric Boundary Layer formulation           (ln_abl = T)
@@ -218,7 +218,20 @@
 !-----------------------------------------------------------------------
 &namsbc_rnf    !   runoffs                                              (ln_rnf =T)
 !-----------------------------------------------------------------------
-   ln_rnf_mouth = .false.    !  specific treatment at rivers mouths
+   ln_rnf_mouth = .true.    !  specific treatment at rivers mouths
+      rn_hrnf     =  15.e0    !  depth over which enhanced vertical mixing is used    (ln_rnf_mouth=T)
+      rn_avt_rnf  =   2.e-3   !  value of the additional vertical mixing coef. [m2/s] (ln_rnf_mouth=T)
+   rn_rfact    =   1.e0    !  multiplicative factor for runoff
+
+   cn_dir      = './'      !  root directory for the runoff data location
+   !___________!_________________________!___________________!___________!_____________!________!___________!__________________!__________!_______________!
+   !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotation ! land/sea mask !
+   !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairing  !    filename   !
+   sn_rnf = 'runoff_v2.4',                 -1. , 'sorunoff', .true.  , .true. , 'yearly'  , ''       , ''       , ''
+   sn_cnf = 'runoff_v2.4',                  0. , 'socoefr', .false.  , .true. , 'yearly'  , ''       , ''       , ''
+   sn_s_rnf    = 'runoffs'            ,    24.   , 'rosaline',   .true.     , .true. , 'yearly'  , ''       , ''       , ''
+   sn_t_rnf    = 'runoffs'            ,    24.   , 'rotemper',   .true.     , .true. , 'yearly'  , ''       , ''       , ''
+   sn_dep_rnf  = 'runoffs'            ,     0.   , 'rodepth' ,   .false.    , .true. , 'yearly'  , ''       , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namsbc_apr    !   Atmospheric pressure used as ocean forcing           (ln_apr_dyn =T)
@@ -231,7 +244,7 @@
    !___________!_________________________!___________________!___________!_____________!________!___________!__________________!______$
    !           !  file name              ! frequency (hours) ! variable  ! time interp.!  clim  ! 'yearly'/ ! weights filename ! rotat$
    !           !                         !  (if <0  months)  !   name    !   (logical) !  (T/F) ! 'monthly' !                  ! pairi$
-   sn_apr  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_1071x361-CALEDO60.nc' , ''       , ''
+   sn_apr  =  'msl_ERA5_tropico-box_surface_1h', 1., 'msl',     .true.   , .false. , 'yearly'  , 'weight_bilinear_ERA5_tropico-box_605x341-TROPICO12.nc' , ''       , ''
 /
 !-----------------------------------------------------------------------
 &namisf       !  Top boundary layer (ISF)                               (default: OFF)
@@ -265,23 +278,212 @@
 &namlbc        !   lateral momentum boundary condition                  (default: NO selection)
 !-----------------------------------------------------------------------
    !                       !  free slip  !   partial slip  !   no slip   ! strong slip
-   rn_shlat    =  1. !#lolo !  shlat = 0  !  0 < shlat < 2  !  shlat = 2  !  2 < shlat
+   rn_shlat    =  0.       !  shlat = 0  !  0 < shlat < 2  !  shlat = 2  !  2 < shlat
    ln_vorlat   = .false.   !#lolo?  consistency of vorticity boundary condition with analytical Eqs.
 /
 !-----------------------------------------------------------------------
 &namagrif      !  AGRIF zoom                                            ("key_agrif")
 !-----------------------------------------------------------------------
-   ln_spc_dyn      = .true.  !  use 0 as special value for dynamics
-   ln_chk_bathy    = .false. !#lolo  =T  check the parent bathymetry
 /
 !-----------------------------------------------------------------------
 &nam_tide      !   tide parameters                                      (default: OFF)
 !-----------------------------------------------------------------------
+   ln_tide     = .true.       ! Activate tides
+      nn_tide_var   = 1          !  Variant of tidal parameter set and tide-potential computation
+      !                          !     (1: default; 0: compatibility with previous versions)
+      ln_tide_dia   = .true.     !  Enable tidal diagnostic output
+      ln_tide_pot   = .true.                !  use tidal potential forcing
+         rn_tide_gamma = 0.7                   ! Tidal tilt factor
+         ln_scal_load  = .true.                ! Use scalar approximation for
+            rn_scal_load = 0.094               !     load potential
+         ln_read_load  = .false.               ! Or read load potential from file
+            cn_tide_load = 'tide_LOAD_grid_T.nc'  ! filename for load potential
+            !
+      ln_tide_ramp  = .false.               !  Use linear ramp for tides at startup
+         rn_tide_ramp_dt = 0.               !  ramp duration in days
+      sn_tide_cnames(1) = 'M2'              !  name of constituent - all tidal components must be set in namelist_cfg
+      sn_tide_cnames(2) = 'S2'
+      sn_tide_cnames(3) = 'N2'
+      sn_tide_cnames(4) = 'K1'
+      sn_tide_cnames(5) = 'O1'
 /
 !-----------------------------------------------------------------------
 &nambdy        !  unstructured open boundaries                          (default: OFF)
 !-----------------------------------------------------------------------
-   ln_bdy         = .false.    !  Use unstructured open boundaries
+   ln_bdy         = .true.    !  Use unstructured open boundaries
+   nb_bdy         = 5         !  number of open boundary sets
+   !
+   ln_coords_file = .false.,.false.,.false.,.false.,.false.   !  =T : read bdy coordinates from file
+      cn_coords_file = 'none','none','none','none','none'
+   !
+   ln_mask_file   = .false.   !  =T : read mask from file
+      cn_mask_file   = 'none'
+   !
+   cn_dyn2d    = 'flather','flather','flather','flather','flather'
+   nn_dyn2d_dta   =  3,3,3,3,3        !  = 0, bdy data are equal to the initial state
+   !                          !  = 1, bdy data are read in 'bdydata   .nc' files
+   !                          !  = 2, use tidal harmonic forcing data from files
+   !                          !  = 3, use external data AND tidal harmonic forcing
+   cn_dyn3d      =  'frs','frs','frs','frs','frs'     !
+   nn_dyn3d_dta  =  1,1,1,1,1         !  = 0, bdy data are equal to the initial state
+   !                          !  = 1, bdy data are read in 'bdydata   .nc' files
+   cn_tra        =  'frs','frs','frs','frs','frs'     !
+   nn_tra_dta    =  1,1,1,1,1         !  = 0, bdy data are equal to the initial state
+   !                          !  = 1, bdy data are read in 'bdydata   .nc' files
+   !
+   ln_tra_dmp    =.false.,.false.,.false.,.false.,.false.     !  open boudaries conditions for tracers
+   ln_dyn3d_dmp  =.false.,.false.,.false.,.false.,.false.     !  open boundary condition for baroclinic velocities
+   rn_time_dmp   =  1.,1.,1.,1.,1.        !  Damping time scale in days
+   rn_time_dmp_out = 1.,1.,1.,1.,1.       !  Outflow damping time scale
+   !                          !  = 1, bdy data are read in 'bdydata   .nc' files
+   cn_ice        =  'none','none','none','none','none'
+   nn_ice_dta    =  0,0,0,0,0         !  = 0, bdy data are equal to the initial state
+   !                          !  = 1, bdy data are read in 'bdydata   .nc' files
+   nn_rimwidth   =  10,10,10,10,10   !  width of the relaxation zone
+   ln_vol        = .false.    !  total volume correction (see nn_volctl parameter)
+   nn_volctl     =  1         !  = 0, the total water flux across open boundaries is zero
+/
+!
+!-----------------------------------------------------------------------
+&nambdy_index  !  structured open boundaries definition
+!-----------------------------------------------------------------------
+   ctypebdy ='S'      !! S1        ! Open boundary type (W,E,S or N)
+   nbdyind  =  2                   ! indice of velocity row or column
+   nbdybeg  = 332                  ! indice of segment start
+   nbdyend  = 1716                 ! indice of segment end
+/
+!-----------------------------------------------------------------------
+&nambdy_index  !  structured open boundaries definition
+!-----------------------------------------------------------------------
+   ctypebdy ='S'      !! S2        ! Open boundary type (W,E,S or N)
+   nbdyind  = 57                   ! indice of velocity row or column
+   nbdybeg  = 69                   ! indice of segment start
+   nbdyend  = 349                  ! indice of segment end
+/
+!-----------------------------------------------------------------------
+&nambdy_index  !  structured open boundaries definition
+!!-----------------------------------------------------------------------
+   ctypebdy ='W'      !! W1        ! Open boundary type (W,E,S or N)
+   nbdyind  = 58                   ! indice of velocity row or column
+   nbdybeg  = 91                   ! indice of segment start
+   nbdyend  = 139                  ! indice of segment end
+/
+!-----------------------------------------------------------------------
+&nambdy_index  !  structured open boundaries definition
+!!-----------------------------------------------------------------------
+   ctypebdy ='W'      !! W2        ! Open boundary type (W,E,S or N)
+   nbdyind  =  2                   ! indice of velocity row or column
+   nbdybeg  = 487                  ! indice of segment start
+   nbdyend  = 925                  ! indice of segment end
+/
+!-----------------------------------------------------------------------
+&nambdy_index  !  structured open boundaries definition
+!-----------------------------------------------------------------------
+   ctypebdy ='N'      !! N1        ! Open boundary type (W,E,S or N)
+   nbdyind  = 924                  ! indice of velocity row or column
+   nbdybeg  =   2                  ! indice of segment start
+   nbdyend  = 1342                 ! indice of segment end
+/
+!!
+!-----------------------------------------------------------------------
+&nambdy_dta    ! S1 ! open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.
+   ln_full_vel = .true.
+   cn_dir      = './BDY/'
+   bn_ssh = 'sossheig_GLORYS2V4-BDY_t_S1_TROPICO12_L125_tr21', -1., 'sossheig',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u2d = 'none'                          ,         24.    , 'vobtcrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v2d = 'none'                          ,         24.    , 'vobtcrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u3d = 'vozocrtx_GLORYS2V4-BDY_u_S1_TROPICO12_L125_tr21', -1., 'vozocrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v3d = 'vomecrty_GLORYS2V4-BDY_v_S1_TROPICO12_L125_tr21', -1., 'vomecrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_tem = 'votemper_GLORYS2V4-BDY_t_S1_TROPICO12_L125_tr21', -1., 'votemper',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_sal = 'vosaline_GLORYS2V4-BDY_t_S1_TROPICO12_L125_tr21', -1., 'vosaline',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+/
+!-----------------------------------------------------------------------
+&nambdy_dta    ! S2 ! open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.
+   ln_full_vel = .true.
+   cn_dir      = './BDY/'
+   bn_ssh = 'sossheig_GLORYS2V4-BDY_t_S2_TROPICO12_L125_tr21', -1., 'sossheig',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u2d = 'none'                          ,         24.    , 'vobtcrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v2d = 'none'                          ,         24.    , 'vobtcrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u3d = 'vozocrtx_GLORYS2V4-BDY_u_S2_TROPICO12_L125_tr21', -1., 'vozocrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v3d = 'vomecrty_GLORYS2V4-BDY_v_S2_TROPICO12_L125_tr21', -1., 'vomecrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_tem = 'votemper_GLORYS2V4-BDY_t_S2_TROPICO12_L125_tr21', -1., 'votemper',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_sal = 'vosaline_GLORYS2V4-BDY_t_S2_TROPICO12_L125_tr21', -1., 'vosaline',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+/
+!-----------------------------------------------------------------------
+&nambdy_dta    ! W1 ! open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.
+   ln_full_vel = .true.
+   cn_dir      = './BDY/'
+   bn_ssh = 'sossheig_GLORYS2V4-BDY_t_W1_TROPICO12_L125_tr21', -1., 'sossheig',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u2d = 'none'                          ,         24.    , 'vobtcrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v2d = 'none'                          ,         24.    , 'vobtcrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u3d = 'vozocrtx_GLORYS2V4-BDY_u_W1_TROPICO12_L125_tr21', -1., 'vozocrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v3d = 'vomecrty_GLORYS2V4-BDY_v_W1_TROPICO12_L125_tr21', -1., 'vomecrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_tem = 'votemper_GLORYS2V4-BDY_t_W1_TROPICO12_L125_tr21', -1., 'votemper',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_sal = 'vosaline_GLORYS2V4-BDY_t_W1_TROPICO12_L125_tr21', -1., 'vosaline',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+/
+!-----------------------------------------------------------------------
+&nambdy_dta    ! W2 ! open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.
+   ln_full_vel = .true.
+   cn_dir      = './BDY/'
+   bn_ssh = 'sossheig_GLORYS2V4-BDY_t_W2_TROPICO12_L125_tr21', -1., 'sossheig',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u2d = 'none'                          ,         24.    , 'vobtcrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v2d = 'none'                          ,         24.    , 'vobtcrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u3d = 'vozocrtx_GLORYS2V4-BDY_u_W2_TROPICO12_L125_tr21', -1., 'vozocrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v3d = 'vomecrty_GLORYS2V4-BDY_v_W2_TROPICO12_L125_tr21', -1., 'vomecrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_tem = 'votemper_GLORYS2V4-BDY_t_W2_TROPICO12_L125_tr21', -1., 'votemper',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_sal = 'vosaline_GLORYS2V4-BDY_t_W2_TROPICO12_L125_tr21', -1., 'vosaline',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+/
+!-----------------------------------------------------------------------
+&nambdy_dta    ! N1 ! open boundaries - external data                       (see nam_bdy)
+!-----------------------------------------------------------------------
+   ln_zinterp  = .false.
+   ln_full_vel = .true.
+   cn_dir      = './BDY/'
+   bn_ssh = 'sossheig_GLORYS2V4-BDY_t_N1_TROPICO12_L125_tr21', -1., 'sossheig',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u2d = 'none'                          ,         24.    , 'vobtcrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v2d = 'none'                          ,         24.    , 'vobtcrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_u3d = 'vozocrtx_GLORYS2V4-BDY_u_N1_TROPICO12_L125_tr21', -1., 'vozocrtx',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_v3d = 'vomecrty_GLORYS2V4-BDY_v_N1_TROPICO12_L125_tr21', -1., 'vomecrty',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_tem = 'votemper_GLORYS2V4-BDY_t_N1_TROPICO12_L125_tr21', -1., 'votemper',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+   bn_sal = 'vosaline_GLORYS2V4-BDY_t_N1_TROPICO12_L125_tr21', -1., 'vosaline',    .true.   , .false.,  'yearly'  ,    ''            ,   ''     ,     ''
+/
+!-----------------------------------------------------------------------
+&nambdy_tide ! S1  !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = './BDY/bdytide_FES-TROPICO12_S1_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
+/
+!-----------------------------------------------------------------------
+&nambdy_tide ! S2  !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = './BDY/bdytide_FES-TROPICO12_S2_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
+/
+!-----------------------------------------------------------------------
+&nambdy_tide ! W1  !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = './BDY/bdytide_FES-TROPICO12_W1_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
+/
+!-----------------------------------------------------------------------
+&nambdy_tide ! W2  !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = './BDY/bdytide_FES-TROPICO12_W2_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
+/
+!-----------------------------------------------------------------------
+&nambdy_tide ! N1  !  tidal forcing at open boundaries                      (default: OFF)
+!-----------------------------------------------------------------------
+   filtide          = './BDY/bdytide_FES-TROPICO12_N1_'   !  file name root of tidal forcing files
+   ln_bdytide_2ddta = .false.                   !
 /
 
 !!======================================================================
@@ -376,7 +578,7 @@
       !                             !   = 31 F(i,j,k,t)=F(local velocity and grid-spacing)
       !                        !  time invariant coefficients:  aht0 = 1/2  Ud*Ld   (lap case) 
       !                             !                           or   = 1/12 Ud*Ld^3 (blp case)
-      rn_Ud        = 0.004          !#lolo  lateral diffusive velocity [m/s] (nn_aht_ijk_t= 0, 10, 20, 30)
+      rn_Ud        = 0.02           !#lolo  lateral diffusive velocity [m/s] (nn_aht_ijk_t= 0, 10, 20, 30)
 /
 !-----------------------------------------------------------------------
 &namtra_mle    !   mixed layer eddy parametrisation (Fox-Kemper)       (default: OFF)
@@ -475,8 +677,9 @@
       nn_evdm  =    0            !  evd apply on tracer (=0) or on tracer and momentum (=1)
       rn_evd   =  100.           !  evd mixing coefficient [m2/s]
    !                       !  Coefficients
-   rn_avm0     =   1.e-4      !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
-   rn_avt0     =   1.e-5      !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
+!!JMM eORCA12.L75-GJM2020: because param de Casimir !!!
+   rn_avm0     =   1.e-5      !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
+   rn_avt0     =   1.e-6      !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
    nn_avb      =    0         !  profile for background avt & avm (=1) or not (=0)
    nn_havtb    =    1         !  horizontal shape for avtb (=1) or not (=0)
 /
@@ -625,6 +828,7 @@
 !-----------------------------------------------------------------------
 &namctl        !   Control prints                                       (default: OFF)
 !-----------------------------------------------------------------------
+sn_cfctl%l_oceout  = .false.
 /
 !-----------------------------------------------------------------------
 &namsto        ! Stochastic parametrization of EOS                      (default: OFF)

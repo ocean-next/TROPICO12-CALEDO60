@@ -453,8 +453,8 @@
 !-----------------------------------------------------------------------
    ln_drg_OFF  = .false.   !  free-slip       : Cd = 0                  (F => fill namdrg_bot
    ln_lin      = .false.   !      linear  drag: Cd = Cd0 Uc0                   &   namdrg_top)
-   ln_non_lin  = .true.    !#lolo  non-linear  drag: Cd = Cd0 |U|
-   ln_loglayer = .false.   !#lolo  logarithmic drag: Cd = vkarmn/log(z/z0) |U|
+   ln_non_lin  = .false.   !#lolo  non-linear  drag: Cd = Cd0 |U|
+   ln_loglayer = .true.   !#lolo  logarithmic drag: Cd = vkarmn/log(z/z0) |U|
    !
    ln_drgimp   = .true.    !  implicit top/bottom friction flag
       ln_drgice_imp = .false. ! implicit ice-ocean drag
@@ -466,11 +466,12 @@
 !-----------------------------------------------------------------------
 &namdrg_bot    !   BOTTOM friction                                      (ln_drg_OFF =F)
 !-----------------------------------------------------------------------
-   rn_Cd0      =  1.e-3    !#lolo  drag coefficient [-]
+   rn_Cd0      =  3.e-3   !#lolo  drag coefficient [-]
    rn_Uc0      =  0.4      !  ref. velocity [m/s] (linear drag=Cd0*Uc0)
    rn_Cdmax    =  0.1      !  drag value maximum [-] (logarithmic drag)
-   rn_ke0      =  2.5e-3   !  background kinetic energy  [m2/s2] (non-linear cases)
-   rn_z0       =  3.e-3    !  roughness [m] (ln_loglayer=T)
+   rn_ke0      =  2.5e-3       !#lolo: MUST BE 0 because tidal motion in???  background kinetic energy  [m2/s2] (non-linear cases)
+   !!   rn_z0       =  3.e-3    !#lolo: Seems WAY too small!!!  roughness [m] (ln_loglayer=T)
+   rn_z0       =  1.e-2    !#lolo: Better!!!  roughness [m] (ln_loglayer=T)
    ln_boost    = .false.   !#lolo  =T regional boost of Cd0 ; =F constant
       rn_boost =  50.         !  local boost factor  [-]
 /
@@ -628,8 +629,8 @@
       nn_evdm  =    0            !  evd apply on tracer (=0) or on tracer and momentum (=1)
       rn_evd   =  100.           !  evd mixing coefficient [m2/s]
    !                       !  Coefficients
-   rn_avm0     =   1.4e-6     !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
-   rn_avt0     =   1.e-10     !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
+   rn_avm0     =   1.e-4      !#lolo?  vertical eddy viscosity   [m2/s]       (background Kz if ln_zdfcst=F)
+   rn_avt0     =   1.e-5      !#lolo?  vertical eddy diffusivity [m2/s]       (background Kz if ln_zdfcst=F)
    nn_avb      =    0         !  profile for background avt & avm (=1) or not (=0)
    nn_havtb    =    1         !  horizontal shape for avtb (=1) or not (=0)
 /
